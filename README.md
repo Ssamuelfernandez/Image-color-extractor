@@ -1,5 +1,5 @@
 
-# 🎨 Image Color Extractor
+# 🎨 Image Color Extractor (Imgcolex)
 
 Extracts the **dominant color** and a **color palette** from an image in **Node.js** and **browser**.
 

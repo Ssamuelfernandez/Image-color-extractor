@@ -1,6 +1,6 @@
 {
-  "name": "image-color-extractor",
-  "version": "1.0.0",
+  "name": "imgcolex",
+  "version": "1.0.1",
   "type": "module",
   "author": {
     "name": "Samuel Fernández",
@@ -9,7 +9,22 @@
   },
   "description": "Extract the dominant color and a color palette from an image using RGBA channels.",
   "homepage": "https://github.com/Ssamuelfernandez/Image-color-extractor",
-  "keywords": [ "dominant", "color", "image", "canvas" ],
+  "keywords": [
+  "dominant", 
+  "color", 
+  "image", 
+  "canvas", 
+  "palette", 
+  "extraction", 
+  "rgba", 
+  "image-processing", 
+  "color-analysis", 
+  "image-analysis", 
+  "web", 
+  "sharp", 
+  "color-detection", 
+  "canvas-api"
+],
   "repository": {
     "type": "git",
     "url": "https://github.com/Ssamuelfernandez/Image-color-extractor.git"
