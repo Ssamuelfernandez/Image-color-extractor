@@ -1,0 +1,20 @@
+{
+  "presets": [
+    ["@babel/preset-env", {
+      "targets": {
+        "node": "current",
+        "browsers": "last 2 versions"
+      },
+      "modules": "auto"
+    }]
+  ],
+  "plugins": [
+    ["transform-import-meta", {
+      "module": "ES6",
+      "meta": {
+        "url": "globalThis.__importMetaUrl__",
+        "resolve": "globalThis.__importMetaResolve__"
+      }
+    }]
+  ]
+}

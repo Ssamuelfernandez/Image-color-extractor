@@ -1,0 +1,56 @@
+{
+  "name": "image-color-extractor",
+  "version": "1.0.0",
+  "type": "module",
+  "author": {
+    "name": "Samuel Fernández",
+    "email": "samuelsfdez@gmail.com",
+    "url": "https://www.ssamuelfernandez.net"
+  },
+  "description": "Extract the dominant color and a color palette from an image using RGBA channels.",
+  "homepage": "https://github.com/Ssamuelfernandez/Image-color-extractor",
+  "keywords": [ "dominant", "color", "image", "canvas" ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ssamuelfernandez/Image-color-extractor.git"
+  },
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "node": "./src/utils/node-color-extractor.js",
+      "browser": "./src/utils/browser-color-extractor.js",
+      "default": "./src/index.js"
+    }
+  },
+  "files": [
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+  "node": ">=20.0.0"
+},
+  "scripts": {
+    "start": "node src/index.js",
+    "build": "node build.js",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:node": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --config=./jest.config.js --selectProjects node",
+    "test:browser": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --config=./jest.config.js --selectProjects browser"
+  },
+  "dependencies": {
+    "file-type": "^20.4.0",
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.10",
+    "@babel/preset-env": "^7.26.9",
+    "@jest/globals": "^29.7.0",
+    "babel-jest": "^29.7.0",
+    "babel-plugin-transform-import-meta": "^2.3.2",
+    "canvas": "^2.11.2",
+    "cross-env": "^7.0.3",
+    "jest": "^29.7.0",
+    "jest-canvas-mock": "^2.4.0",
+    "jest-environment-jsdom": "^29.7.0"
+  }
+}
