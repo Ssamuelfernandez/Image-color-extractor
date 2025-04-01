@@ -1,20 +1,31 @@
-
-export function createPixelArray(imgData, pixelCount, quality) {
+export function createPixelArray(imgData, options = {}) {
+    const { quality, alphaThreshold } = validateOptions(options);
     const pixelArray = [];
+    
+    const pixelCount = imgData.length / 4;
     for (let i = 0; i < pixelCount; i += quality) {
         const offset = i * 4;
-        const [r, g, b, a] = imgData.slice(offset, offset + 4);
-        if (a >= 125 && !(r > 250 && g > 250 && b > 250)) {
+        const r = imgData[offset];
+        const g = imgData[offset + 1];
+        const b = imgData[offset + 2];
+        const a = imgData[offset + 3];
+
+        if (a >= alphaThreshold && !(r > 250 && g > 250 && b > 250)) {
+            
             pixelArray.push([r, g, b]);
         }
     }
     return pixelArray;
 }
 
-export function validateOptions({ colorCount = 10, quality = 10 }) {
-    if (colorCount === 1) throw new Error('Usa getColor() en lugar de getPalette()');
+export function validateOptions({ 
+    colorCount = 10, 
+    quality = 10, 
+    alphaThreshold = 125 
+}) {
     return {
-        colorCount: Math.min(Math.max(colorCount, 2), 20),
-        quality: Math.max(quality, 1)
+        colorCount: Math.min(Math.max(colorCount, 1), 20),
+        quality: Math.max(quality, 1),
+        alphaThreshold: Math.min(Math.max(alphaThreshold, 0), 255)
     };
 }
