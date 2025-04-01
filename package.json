@@ -42,6 +42,11 @@
     "README.md",
     "LICENSE"
   ],
+  "vite": {
+    "optimizeDeps": {
+      "exclude": ["imgcolex"]
+    }
+  },
   "engines": {
   "node": ">=20.0.0"
 },
