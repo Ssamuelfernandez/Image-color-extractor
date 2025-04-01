@@ -26,7 +26,13 @@ const MockWorker = jest.fn().mockImplementation(function () {
     // Run immediately without timeout
     process.nextTick(() => {
       if (this.onmessage) {
-        this.onmessage({ data: [[255, 0, 0]] });
+        this.onmessage({
+          data: {
+            success: true,
+            color: [255, 0, 0],
+            palette: [[255, 0, 0], [0, 255, 0], [0, 0, 255]]
+          }
+        });
       }
     });
   });
@@ -102,7 +108,7 @@ describe('BrowserColorExtractor', () => {
 
     describe('createPixelArray()', () => {
       it('must filter out transparent and white pixels', () => {
-        const result = createPixelArray(mockImageData, 4, 1);
+        const result = createPixelArray(mockImageData, { quality: 1 });
         expect(result).toEqual([
           [255, 0, 0],
           [0, 255, 0],
@@ -115,27 +121,18 @@ describe('BrowserColorExtractor', () => {
   describe('Advanced Functionality', () => {
     describe('getPalette()', () => {
       it('must be resolved with the worker`s palette', async () => {
-        const palette = await BrowserColorExtractor.getPalette(mockImageData, 4);
-        expect(palette).toEqual([[255, 0, 0]]);
+        const palette = await BrowserColorExtractor.getPalette(mockImageData, 5, 10);
+        expect(palette).toEqual([[255, 0, 0], [0, 255, 0], [0, 0, 255]]);
         expect(MockWorker).toHaveBeenCalled();
-      }, 10000);
+      }, 5000);
     });
 
     describe('getColor()', () => {
-      it('must return the first color in the palette', async () => {
-        const mockPalette = [[255, 0, 0], [0, 255, 0]];
-        jest.spyOn(BrowserColorExtractor, 'getPalette')
-          .mockImplementation(() => Promise.resolve(mockPalette));
-
+      it('must return the most repeated color', async () => {
+        
         const color = await BrowserColorExtractor.getColor(new MockImage());
-
-        expect(color).toEqual(mockPalette[0]);
-        expect(BrowserColorExtractor.getPalette).toHaveBeenCalledWith(
-          expect.any(Uint8ClampedArray),
-          expect.any(Number),
-          5,
-          10
-        );
+        
+        expect(color).toEqual([255, 0, 0]);
       });
     });
   });
