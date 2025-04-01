@@ -1,5 +1,4 @@
-
-import { createPixelArray, validateOptions } from './extractor-core.js';
+import { createPixelArray } from './extractor-core.js';
 import Quantizer from './quantizer.js';
 import sharp from 'sharp';
 
@@ -12,15 +11,11 @@ class NodeColorExtractor {
      * - Generates a color palette and returns the most dominant color.
      */
 
-    static async getColor(buffer, quality = 10) {
-        const { data, width, height, channels } = await this.getPixels(buffer);
-
-        if (!data || data.length === 0) {
-            throw new Error('The image does not contain valid data');
-        }
-
-        const palette = await this.getPalette({ data, width, height, channels }, 5, quality);
-        return palette[0];
+    static async getColor(img, quality = 10) {
+        const { data } = await this.getPixels(img);
+        const pixelArray = createPixelArray(data, { quality, colorCount: 1, alphaThreshold: 255 });
+        const color = Quantizer.extractColor(pixelArray);
+        return color;
     }
 
     /**
@@ -30,10 +25,11 @@ class NodeColorExtractor {
      * - Uses the quantizer algorithm to extract a specified number of colors.
      */
 
-    static async getPalette({ data, width, height, channels }, colorCount = 10, quality = 10) {
-        const options = validateOptions({ colorCount, quality });
-        const pixelArray = createPixelArray(data, width * height, options.quality);
-        return Quantizer.quantize(pixelArray, options.colorCount);
+    static async getPalette(img, colorCount = 10, quality = 10) {
+        if (colorCount < 2) throw new Error('Use getColor() instead of getPalette()');
+        const { data } = await this.getPixels(img);
+        const pixelArray = createPixelArray(data, { colorCount, quality });
+        return Quantizer.extractPalette(pixelArray, colorCount);
     }
 
     /**
@@ -43,15 +39,21 @@ class NodeColorExtractor {
      * - Returns pixel data along with image dimensions and channel information.
      */
 
-    static async getPixels(buffer) {
+    static async getPixels(img) {
         try {
-            const { data, info } = await sharp(buffer)
-                .ensureAlpha()
-                .raw()
-                .toBuffer({ resolveWithObject: true });
-    
+
+            const metadata = await sharp(img).metadata();
+
+            const image = sharp(img)
+                .withMetadata(false)
+                .toColorspace('srgb');
+
+            if (metadata.format !== 'png') {
+                image.ensureAlpha();
+            }
+            const { data, info } = await image.raw().toBuffer({ resolveWithObject: true });
             return {
-                data,
+                data: new Uint8ClampedArray(data.buffer),
                 width: info.width,
                 height: info.height,
                 channels: info.channels
